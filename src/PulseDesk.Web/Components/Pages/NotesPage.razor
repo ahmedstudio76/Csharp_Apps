@@ -1,0 +1,65 @@
+@page "/notes"
+@rendermode InteractiveServer
+@inject NoteService Notes
+
+<PageTitle>PulseDesk · Notes</PageTitle>
+
+<header class="page-head">
+    <div>
+        <p class="eyebrow">Capture</p>
+        <h1>Notes</h1>
+    </div>
+    <button class="btn" @onclick="NewNote">New note</button>
+</header>
+
+<div class="grid-2">
+    <ul class="note-list">
+        @foreach (var note in Notes.GetAll())
+        {
+            <li class="card @(_selected?.Id == note.Id ? "selected" : null)" @onclick="() => Select(note)">
+                <strong>@note.Title</strong>
+                <small>@note.UpdatedUtc.ToLocalTime().ToString("g")</small>
+            </li>
+        }
+    </ul>
+    <article class="card">
+        @if (_selected is null)
+        {
+            <p class="muted">Select a note.</p>
+        }
+        else
+        {
+            <input class="title-input" @bind="_selected.Title" @bind:event="oninput" @onblur="Save" />
+            <textarea @bind="_selected.Body" @bind:event="oninput" @onblur="Save" rows="12"></textarea>
+            <button class="ghost" @onclick="Delete">Delete</button>
+        }
+    </article>
+</div>
+
+@code {
+    private NoteItem? _selected;
+
+    protected override void OnInitialized() => _selected = Notes.GetAll().FirstOrDefault();
+
+    private void Select(NoteItem note) => _selected = note;
+
+    private void NewNote()
+    {
+        _selected = Notes.Add("Untitled");
+    }
+
+    private void Save()
+    {
+        if (_selected is null)
+            return;
+        Notes.Update(_selected.Id, _selected.Title, _selected.Body);
+    }
+
+    private void Delete()
+    {
+        if (_selected is null)
+            return;
+        Notes.Remove(_selected.Id);
+        _selected = Notes.GetAll().FirstOrDefault();
+    }
+}

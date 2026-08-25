@@ -1,0 +1,49 @@
+@page "/tasks"
+@rendermode InteractiveServer
+@inject TaskBoardService Board
+
+<PageTitle>PulseDesk · Tasks</PageTitle>
+
+<header class="page-head">
+    <div>
+        <p class="eyebrow">Work</p>
+        <h1>Tasks</h1>
+    </div>
+</header>
+
+<article class="card">
+    <form class="row" @onsubmit="Add" @onsubmit:preventDefault>
+        <input @bind="_title" placeholder="What needs to happen?" />
+        <select @bind="_priority">
+            <option value="@TaskPriority.Low">Low</option>
+            <option value="@TaskPriority.Medium">Medium</option>
+            <option value="@TaskPriority.High">High</option>
+        </select>
+        <button type="submit" class="btn">Add</button>
+    </form>
+</article>
+
+<ul class="task-board">
+    @foreach (var task in Board.GetAll())
+    {
+        <li class="card task-row @(task.IsDone ? "done" : null)">
+            <button class="check" @onclick="() => Board.Toggle(task.Id)" aria-label="Toggle"></button>
+            <div>
+                <strong>@task.Title</strong>
+                <small class="prio-label">@task.Priority</small>
+            </div>
+            <button class="ghost" @onclick="() => Board.Remove(task.Id)">Remove</button>
+        </li>
+    }
+</ul>
+
+@code {
+    private string _title = string.Empty;
+    private TaskPriority _priority = TaskPriority.Medium;
+
+    private void Add()
+    {
+        Board.Add(_title, _priority);
+        _title = string.Empty;
+    }
+}

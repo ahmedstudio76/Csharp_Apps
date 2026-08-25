@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <Company>Ahmed Studio</Company>
+    <Authors>Ahmed Studio</Authors>
+    <Copyright>Copyright © Ahmed Studio</Copyright>
+  </PropertyGroup>
+</Project>
