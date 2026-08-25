@@ -1,0 +1,60 @@
+@page "/"
+@rendermode InteractiveServer
+@inject TaskBoardService Tasks
+@inject NoteService Notes
+@inject FocusTimerService Timer
+
+<PageTitle>PulseDesk · Dashboard</PageTitle>
+
+<header class="page-head">
+    <div>
+        <p class="eyebrow">Today</p>
+        <h1>Stay in flow.</h1>
+    </div>
+    <p class="clock">@DateTime.Now.ToString("dddd · HH:mm")</p>
+</header>
+
+<section class="grid-3">
+    <article class="card stat">
+        <span>Open tasks</span>
+        <strong>@Tasks.OpenCount</strong>
+    </article>
+    <article class="card stat">
+        <span>Completed</span>
+        <strong>@Tasks.DoneCount</strong>
+    </article>
+    <article class="card stat">
+        <span>Focus sessions</span>
+        <strong>@Timer.CompletedSessions</strong>
+    </article>
+</section>
+
+<section class="grid-2">
+    <article class="card">
+        <h2>Next up</h2>
+        <ul class="task-list">
+            @foreach (var task in Tasks.GetAll().Where(t => !t.IsDone).Take(5))
+            {
+                <li>
+                    <span class="prio @task.Priority.ToString().ToLowerInvariant()"></span>
+                    @task.Title
+                </li>
+            }
+        </ul>
+    </article>
+    <article class="card">
+        <h2>Latest note</h2>
+        @{
+            var note = Notes.GetAll().FirstOrDefault();
+        }
+        @if (note is null)
+        {
+            <p class="muted">No notes yet.</p>
+        }
+        else
+        {
+            <h3>@note.Title</h3>
+            <p class="muted">@note.Body</p>
+        }
+    </article>
+</section>

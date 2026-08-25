@@ -1,0 +1,60 @@
+@page "/focus"
+@rendermode InteractiveServer
+@implements IDisposable
+@inject FocusTimerService Timer
+
+<PageTitle>PulseDesk · Focus</PageTitle>
+
+<header class="page-head">
+    <div>
+        <p class="eyebrow">Deep work</p>
+        <h1>Focus timer</h1>
+    </div>
+</header>
+
+<article class="card timer">
+    <div class="ring" style="--p: @(Timer.Progress.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture))">
+        <span>@Timer.Remaining.ToString(@"mm\:ss")</span>
+    </div>
+    <div class="row">
+        <button class="btn" @onclick="Timer.Start">Start</button>
+        <button class="ghost" @onclick="Timer.Pause">Pause</button>
+        <button class="ghost" @onclick="() => Timer.Reset()">Reset</button>
+    </div>
+    <p class="muted">Sessions completed: @Timer.CompletedSessions</p>
+</article>
+
+@code {
+    private PeriodicTimer? _clock;
+    private CancellationTokenSource? _cts;
+
+    protected override void OnInitialized()
+    {
+        _cts = new CancellationTokenSource();
+        _clock = new PeriodicTimer(TimeSpan.FromSeconds(1));
+        _ = RunAsync(_cts.Token);
+    }
+
+    private async Task RunAsync(CancellationToken token)
+    {
+        try
+        {
+            while (_clock is not null && await _clock.WaitForNextTickAsync(token))
+            {
+                Timer.Tick(TimeSpan.FromSeconds(1));
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // shutdown
+        }
+    }
+
+    public void Dispose()
+    {
+        _cts?.Cancel();
+        _cts?.Dispose();
+        _clock?.Dispose();
+    }
+}

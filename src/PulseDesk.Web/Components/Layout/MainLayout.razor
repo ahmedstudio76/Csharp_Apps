@@ -1,0 +1,23 @@
+@inherits LayoutComponentBase
+
+<div class="shell">
+    <aside class="rail">
+        <div class="brand">
+            <span class="brand-mark"></span>
+            <div>
+                <strong>PulseDesk</strong>
+                <small>Command center</small>
+            </div>
+        </div>
+        <nav>
+            <NavLink href="/" Match="NavLinkMatch.All">Dashboard</NavLink>
+            <NavLink href="/tasks">Tasks</NavLink>
+            <NavLink href="/focus">Focus</NavLink>
+            <NavLink href="/notes">Notes</NavLink>
+        </nav>
+        <p class="rail-foot">Ahmed Studio · C#</p>
+    </aside>
+    <main class="stage">
+        @Body
+    </main>
+</div>

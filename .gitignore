@@ -1,0 +1,27 @@
+## Build
+bin/
+obj/
+out/
+[Dd]ebug/
+[Rr]elease/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.vs/
+.vs/
+*.nupkg
+*.snupkg
+project.lock.json
+artifacts/
+
+## IDE
+.idea/
+*.swp
+*~
+.vscode/*
+!.vscode/extensions.json
+
+## OS
+.DS_Store
+Thumbs.db
